@@ -1,6 +1,8 @@
 from ceaser_cipher import ceasercipher
+from ceaser_cracker import ceasercracker
 import pytest
 
+MESSAGE = "The meeting is at midnight near the old bridge"
 @pytest.mark.parametrize("text,key,expected",[
     ("abc", 3, "def"),
     ("xyz", 3, "abc"),
@@ -12,3 +14,8 @@ import pytest
 def test_encrypt_decrypt(text,key, expected):
     cipher = ceasercipher(key)
     assert cipher.decrypt(cipher.encrypt(text)) == text
+@pytest.mark.parametrize("key", [1, 5, 13, 17, 25])
+def test_cracker(key):
+    secret =ceasercipher(key).encrypt(MESSAGE)
+    cracker = ceasercracker()
+    assert cracker.crack(secret) == (key, MESSAGE)
