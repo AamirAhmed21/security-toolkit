@@ -1,6 +1,7 @@
 from ceaser_cipher import ceasercipher
 from ceaser_cracker import ceasercracker
 from vigenere_cipher import vigenerecipher
+from hasher import ToyHash
 import pytest
 
 MESSAGE = "The meeting is at midnight near the old bridge"
@@ -33,3 +34,16 @@ def test_vigenere_cipher(text, key, expected):
     cipher = vigenerecipher(key)
     assert cipher.encrypt(text) == expected
     assert cipher.decrypt(expected) == text
+@pytest.mark.parametrize("text, expected", [
+    ("hello",261238937),
+    ("hi", 5863446),
+])
+def test_toyhash(text, expected):
+    toy = ToyHash()
+    assert toy.djb2(text) == expected
+def test_djb2_same_input():
+    toy = ToyHash()
+    assert toy.djb2("hello") == toy.djb2("hello")
+def test_djb2_order_matter():
+    toy = ToyHash()
+    assert toy.djb2("hi") != toy.djb2("ih")
